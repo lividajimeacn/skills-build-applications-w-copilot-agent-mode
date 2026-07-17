@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getApiUrl, normalizeItems } from '../utils/api'
+
+const API_URL = 'http://127.0.0.1:8000/api/activities/'
 
 function Activities() {
   const [activities, setActivities] = useState([])
@@ -11,7 +12,7 @@ function Activities() {
 
     async function loadActivities() {
       try {
-        const response = await fetch(getApiUrl('activities'))
+        const response = await fetch(API_URL)
 
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`)
@@ -20,7 +21,7 @@ function Activities() {
         const payload = await response.json()
 
         if (isMounted) {
-          setActivities(normalizeItems(payload, 'activities'))
+          setActivities(Array.isArray(payload) ? payload : payload?.activities || payload?.items || payload?.results || payload?.data || [])
         }
       } catch (err) {
         if (isMounted) {

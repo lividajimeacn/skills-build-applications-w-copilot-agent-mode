@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getApiUrl, normalizeItems } from '../utils/api'
+
+const API_URL = 'http://127.0.0.1:8000/api/teams/'
 
 function Teams() {
   const [teams, setTeams] = useState([])
@@ -11,7 +12,7 @@ function Teams() {
 
     async function loadTeams() {
       try {
-        const response = await fetch(getApiUrl('teams'))
+        const response = await fetch(API_URL)
 
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`)
@@ -20,7 +21,7 @@ function Teams() {
         const payload = await response.json()
 
         if (isMounted) {
-          setTeams(normalizeItems(payload, 'teams'))
+          setTeams(Array.isArray(payload) ? payload : payload?.teams || payload?.items || payload?.results || payload?.data || [])
         }
       } catch (err) {
         if (isMounted) {

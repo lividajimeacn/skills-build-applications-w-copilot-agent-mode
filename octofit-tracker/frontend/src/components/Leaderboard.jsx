@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getApiUrl, normalizeItems } from '../utils/api'
+
+const API_URL = 'http://127.0.0.1:8000/api/leaderboard/'
 
 function Leaderboard() {
   const [entries, setEntries] = useState([])
@@ -11,7 +12,7 @@ function Leaderboard() {
 
     async function loadLeaderboard() {
       try {
-        const response = await fetch(getApiUrl('leaderboard'))
+        const response = await fetch(API_URL)
 
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`)
@@ -20,7 +21,7 @@ function Leaderboard() {
         const payload = await response.json()
 
         if (isMounted) {
-          setEntries(normalizeItems(payload, 'entries'))
+          setEntries(Array.isArray(payload) ? payload : payload?.entries || payload?.items || payload?.results || payload?.data || [])
         }
       } catch (err) {
         if (isMounted) {

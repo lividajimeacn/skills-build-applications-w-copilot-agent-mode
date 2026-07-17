@@ -12,7 +12,7 @@ function App() {
       <header className="mb-4">
         <h1 className="display-6">OctoFit Tracker</h1>
         <p className="text-muted">
-          Connects to the Node.js API from localhost or a Codespace using VITE_CODESPACE_NAME.
+          Define VITE_CODESPACE_NAME in .env.local for Codespaces, or leave it unset to use the localhost fallback.
         </p>
       </header>
 

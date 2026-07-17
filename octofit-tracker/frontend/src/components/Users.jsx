@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getApiUrl, normalizeItems } from '../utils/api'
+
+const API_URL = 'http://127.0.0.1:8000/api/users/'
 
 function Users() {
   const [users, setUsers] = useState([])
@@ -11,7 +12,7 @@ function Users() {
 
     async function loadUsers() {
       try {
-        const response = await fetch(getApiUrl('users'))
+        const response = await fetch(API_URL)
 
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`)
@@ -20,7 +21,7 @@ function Users() {
         const payload = await response.json()
 
         if (isMounted) {
-          setUsers(normalizeItems(payload, 'users'))
+          setUsers(Array.isArray(payload) ? payload : payload?.users || payload?.items || payload?.results || payload?.data || [])
         }
       } catch (err) {
         if (isMounted) {
