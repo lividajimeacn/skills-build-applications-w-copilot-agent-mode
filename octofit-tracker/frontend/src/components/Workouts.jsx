@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react'
 
-const API_URL = 'http://127.0.0.1:8000/api/workouts/'
-const API_URLtest = '/api/workouts/'
+const API_URL = (() => {
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+
+  if (codespaceName) {
+    return `https://${codespaceName}-8000.app.github.dev/api/workouts/`
+  }
+
+  return 'http://127.0.0.1:8000/api/workouts/'
+})()
+
+const normalizeItems = (payload) =>
+  Array.isArray(payload) ? payload : payload?.workouts || payload?.items || payload?.results || payload?.data || []
 
 function Workouts() {
   const [workouts, setWorkouts] = useState([])
@@ -22,7 +32,7 @@ function Workouts() {
         const payload = await response.json()
 
         if (isMounted) {
-          setWorkouts(Array.isArray(payload) ? payload : payload?.workouts || payload?.items || payload?.results || payload?.data || [])
+          setWorkouts(normalizeItems(payload))
         }
       } catch (err) {
         if (isMounted) {

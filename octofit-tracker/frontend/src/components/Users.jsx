@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react'
 
-const API_URL = 'http://127.0.0.1:8000/api/users/'
-const API_URLtest = '/api/users/'
+const API_URL = (() => {
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+
+  if (codespaceName) {
+    return `https://${codespaceName}-8000.app.github.dev/api/users/`
+  }
+
+  return 'http://127.0.0.1:8000/api/users/'
+})()
+
+const normalizeItems = (payload) =>
+  Array.isArray(payload) ? payload : payload?.users || payload?.items || payload?.results || payload?.data || []
 
 function Users() {
   const [users, setUsers] = useState([])
@@ -22,7 +32,7 @@ function Users() {
         const payload = await response.json()
 
         if (isMounted) {
-          setUsers(Array.isArray(payload) ? payload : payload?.users || payload?.items || payload?.results || payload?.data || [])
+          setUsers(normalizeItems(payload))
         }
       } catch (err) {
         if (isMounted) {

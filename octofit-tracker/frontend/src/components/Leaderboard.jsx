@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react'
 
-const API_URL = 'http://127.0.0.1:8000/api/leaderboard/'
-const API_URLtest = '/api/leaderboard/'
+const API_URL = (() => {
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+
+  if (codespaceName) {
+    return `https://${codespaceName}-8000.app.github.dev/api/leaderboard/`
+  }
+
+  return 'http://127.0.0.1:8000/api/leaderboard/'
+})()
+
+const normalizeItems = (payload) =>
+  Array.isArray(payload) ? payload : payload?.entries || payload?.items || payload?.results || payload?.data || []
 
 function Leaderboard() {
   const [entries, setEntries] = useState([])
@@ -22,7 +32,7 @@ function Leaderboard() {
         const payload = await response.json()
 
         if (isMounted) {
-          setEntries(Array.isArray(payload) ? payload : payload?.entries || payload?.items || payload?.results || payload?.data || [])
+          setEntries(normalizeItems(payload))
         }
       } catch (err) {
         if (isMounted) {

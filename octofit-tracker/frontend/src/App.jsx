@@ -7,12 +7,16 @@ import Workouts from './components/Workouts'
 import './App.css'
 
 function App() {
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+
   return (
     <div className="container py-4">
       <header className="mb-4">
         <h1 className="display-6">OctoFit Tracker</h1>
         <p className="text-muted">
-          Define VITE_CODESPACE_NAME in .env.local for Codespaces, or leave it unset to use the localhost fallback.
+          {codespaceName
+            ? `Using Codespaces host ${codespaceName}.`
+            : 'Define VITE_CODESPACE_NAME in .env.local for Codespaces, or leave it unset to use the localhost fallback.'}
         </p>
       </header>
 

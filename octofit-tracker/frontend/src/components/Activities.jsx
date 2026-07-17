@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react'
 
-const API_URL = 'http://127.0.0.1:8000/api/activities/'
-const API_URLtest = '/api/activities/'
+const API_URL = (() => {
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+
+  if (codespaceName) {
+    return `https://${codespaceName}-8000.app.github.dev/api/activities/`
+  }
+
+  return 'http://127.0.0.1:8000/api/activities/'
+})()
+
+const normalizeItems = (payload) =>
+  Array.isArray(payload) ? payload : payload?.activities || payload?.items || payload?.results || payload?.data || []
 
 function Activities() {
   const [activities, setActivities] = useState([])
@@ -22,7 +32,7 @@ function Activities() {
         const payload = await response.json()
 
         if (isMounted) {
-          setActivities(Array.isArray(payload) ? payload : payload?.activities || payload?.items || payload?.results || payload?.data || [])
+          setActivities(normalizeItems(payload))
         }
       } catch (err) {
         if (isMounted) {

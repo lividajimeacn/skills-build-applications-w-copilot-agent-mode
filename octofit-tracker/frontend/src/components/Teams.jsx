@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react'
 
-const API_URL = 'http://127.0.0.1:8000/api/teams/'
-const API_URLtest = '/api/teams/'
+const API_URL = (() => {
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+
+  if (codespaceName) {
+    return `https://${codespaceName}-8000.app.github.dev/api/teams/`
+  }
+
+  return 'http://127.0.0.1:8000/api/teams/'
+})()
+
+const normalizeItems = (payload) =>
+  Array.isArray(payload) ? payload : payload?.teams || payload?.items || payload?.results || payload?.data || []
 
 function Teams() {
   const [teams, setTeams] = useState([])
@@ -22,7 +32,7 @@ function Teams() {
         const payload = await response.json()
 
         if (isMounted) {
-          setTeams(Array.isArray(payload) ? payload : payload?.teams || payload?.items || payload?.results || payload?.data || [])
+          setTeams(normalizeItems(payload))
         }
       } catch (err) {
         if (isMounted) {
