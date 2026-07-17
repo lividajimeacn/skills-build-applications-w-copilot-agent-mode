@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { getApiBaseUrl } from './config/api';
 import { connectToDatabase } from './config/database';
 import usersRouter from './routes/users';
 import teamsRouter from './routes/teams';
@@ -10,6 +9,16 @@ import leaderboardRouter from './routes/leaderboard';
 import workoutsRouter from './routes/workouts';
 
 dotenv.config();
+
+const getApiBaseUrl = (): string => {
+  const codespaceName = process.env.CODESPACE_NAME;
+
+  if (codespaceName) {
+    return `https://${codespaceName}-8000.app.github.dev`;
+  }
+
+  return 'http://localhost:8000';
+};
 
 const app = express();
 const port = Number(process.env.PORT || 8000);
