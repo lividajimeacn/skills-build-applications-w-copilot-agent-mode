@@ -6,14 +6,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const api_1 = require("./config/api");
+const database_1 = require("./config/database");
+const users_1 = __importDefault(require("./routes/users"));
+const teams_1 = __importDefault(require("./routes/teams"));
+const activities_1 = __importDefault(require("./routes/activities"));
+const leaderboard_1 = __importDefault(require("./routes/leaderboard"));
+const workouts_1 = __importDefault(require("./routes/workouts"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT || 8000);
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.get('/api/health', (_req, res) => {
-    res.json({ status: 'ok' });
+    res.json({ status: 'ok', apiBaseUrl: (0, api_1.getApiBaseUrl)() });
 });
-app.listen(port, () => {
-    console.log(`Backend listening on port ${port}`);
+app.use('/api/users', users_1.default);
+app.use('/api/teams', teams_1.default);
+app.use('/api/activities', activities_1.default);
+app.use('/api/leaderboard', leaderboard_1.default);
+app.use('/api/workouts', workouts_1.default);
+(0, database_1.connectToDatabase)()
+    .then(() => {
+    app.listen(port, () => {
+        console.log(`Backend listening on port ${port}`);
+        console.log(`API base URL: ${(0, api_1.getApiBaseUrl)()}`);
+    });
+})
+    .catch((error) => {
+    console.error('Failed to connect to MongoDB:', error);
+    process.exit(1);
 });
