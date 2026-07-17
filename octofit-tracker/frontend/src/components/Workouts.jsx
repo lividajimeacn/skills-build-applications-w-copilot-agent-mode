@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 const API_URL = 'http://127.0.0.1:8000/api/workouts/'
+const API_URLtest = '/api/workouts/'
 
 function Workouts() {
   const [workouts, setWorkouts] = useState([])
