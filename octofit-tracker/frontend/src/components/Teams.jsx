@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 const API_URL = 'http://127.0.0.1:8000/api/teams/'
+const API_URLtest = '/api/teams/'
 
 function Teams() {
   const [teams, setTeams] = useState([])

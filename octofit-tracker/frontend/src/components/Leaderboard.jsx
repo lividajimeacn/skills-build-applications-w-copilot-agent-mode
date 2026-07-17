@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 const API_URL = 'http://127.0.0.1:8000/api/leaderboard/'
+const API_URLtest = '/api/leaderboard/'
 
 function Leaderboard() {
   const [entries, setEntries] = useState([])
